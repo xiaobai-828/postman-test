@@ -11,23 +11,149 @@
       "name": "baidu_test",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "{{url}}",
+          "host": [
+            "{{url}}"
+          ]
+        }
       },
       "response": []
     },
     {
       "name": "pcsearch",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"状态码200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"返回正常ok字段\", function () {\r",
+              "    pm.expect(pm.response.text()).to.include(\"ok\");\r",
+              "});\r",
+              "\r",
+              "var responsejson = pm.response.json();\r",
+              "pm.environment.set(\"log_id\", responsejson);\r",
+              "\r",
+              "console.log('假装获取了token传到其它接口去')"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
-        "method": "GET",
-        "header": []
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "User-Agent",
+            "value": "{{user-agent}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept-Charset",
+            "value": "utf-8",
+            "type": "text"
+          },
+          {
+            "key": "tracecode",
+            "value": "2672665100610057482032305",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"invoke_info\": {\r\n        \"pos_1\": [\r\n            {}\r\n        ],\r\n        \"pos_2\": [\r\n            {}\r\n        ],\r\n        \"pos_3\": [\r\n            {}\r\n        ]\r\n    }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://ug.baidu.com/mcp/pc/pcsearch",
+          "protocol": "https",
+          "host": [
+            "ug",
+            "baidu",
+            "com"
+          ],
+          "path": [
+            "mcp",
+            "pc",
+            "pcsearch"
+          ]
+        }
       },
       "response": []
     },
     {
       "name": "appsrv",
       "request": {
-        "method": "GET",
-        "header": []
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0:",
+            "type": "text"
+          },
+          {
+            "key": "charset",
+            "value": "utf-8",
+            "type": "text"
+          },
+          {
+            "key": "token",
+            "value": "{{}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"host\": 6,\r\n    \"scene\": 6001,\r\n    \"category\": 6001001,\r\n    \"pkgname\": \"\",\r\n    \"appname\": {{log_id}},\r\n    \"event\": 100,\r\n    \"ext\": {}\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://appc.baidu.com/appsrv?action=appdistributionlog&native_api=1",
+          "protocol": "https",
+          "host": [
+            "appc",
+            "baidu",
+            "com"
+          ],
+          "path": [
+            "appsrv"
+          ],
+          "query": [
+            {
+              "key": "action",
+              "value": "appdistributionlog"
+            },
+            {
+              "key": "native_api",
+              "value": "1"
+            }
+          ]
+        }
       },
       "response": []
     }
