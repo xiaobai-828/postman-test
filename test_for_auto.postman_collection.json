@@ -1,0 +1,35 @@
+{
+  "info": {
+    "_postman_id": "3cda2b86-395d-416b-aa6b-45634636846f",
+    "name": "test_for_auto",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "4899023",
+    "_collection_link": "https://go.postman.co/collection/4899023-3cda2b86-395d-416b-aa6b-45634636846f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "baidu_test",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "pcsearch",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "appsrv",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}
