@@ -15,4 +15,5 @@ jobs:
       - name: 运行Postman测试
         run: |
           npm install -g newman
-          newman run "test_for_auto.postman_collection.json" -e "测试环境.postman_environment.json"
+          newman run collections/test_for_auto.postman_collection.json \
+          -e environments/测试环境.postman_environment.json \
