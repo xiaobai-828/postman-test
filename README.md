@@ -1,2 +1,3 @@
-# postman-test
-postman自动化
+这是一个以用postman+git+github集成的接口自动化
+它可以在push main分支时自动触发
+它可以生成报告并发送到指定的邮箱
