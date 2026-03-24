@@ -33,8 +33,6 @@ jobs:
     steps:      
       # 拉取自己仓库里的 postman 脚本
       - uses: actions/checkout@v4  
-        with:
-          ref: ${{ github.event.client_payload.sha }}
       
       # ==============================================
       # 这里会自动获取 Webhook 传过来的 事件类型、分支
