@@ -2,6 +2,18 @@ name: 执行接口自动化
 
 # 监控：接收 Webhook 通知（业务代码仓库）
 on:
+  # 跨仓库监听业务仓库 → 只监听你要的 5 种事件
+  workflow_run:
+    workflows:
+      - push               # 只监听开发仓库 push
+      - pull_request       # 只监听开发仓库 PR
+      - deployment         # 只监听开发仓库 部署
+      - deployment_status  # 只监听开发仓库 部署状态
+      - release            # 只监听开发仓库 发布
+    types: [completed]
+    branches: [main]
+
+# 手动调用触发  可以配置url、个人token 填写type到body里调用
   repository_dispatch:
     types:
       - deployment
@@ -9,6 +21,7 @@ on:
       - push
       - pull_request
       - release
+      
       
 # 测试脚本push测试代码仓库
   push:
