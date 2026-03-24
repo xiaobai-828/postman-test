@@ -4,11 +4,11 @@ name: 执行接口自动化
 on:
   repository_dispatch:
     types:
-      - deployment_statuses
-      - deployments
-      - pull_requests
-      - pushes
-      - releases
+      - deployment
+      - deployment_status
+      - push
+      - pull_request
+      - release
       
 # 测试脚本push测试代码仓库
   push:
