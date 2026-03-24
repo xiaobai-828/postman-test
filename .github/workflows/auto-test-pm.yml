@@ -1,0 +1,73 @@
+name: 执行接口自动化
+
+# 监控：接收 Webhook 通知（业务代码仓库）
+on:
+  repository_dispatch:
+    types:
+      - deployment_statuses
+      - deployments
+      - pull_requests
+      - pushes
+      - releases
+      
+# 测试脚本push测试代码仓库
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:     
+      # 拉取自己仓库里的 postman 脚本
+      - uses: actions/checkout@v4    
+      
+      # ==============================================
+      # 这里会自动获取 Webhook 传过来的 事件类型、分支
+      # ==============================================
+      - name: 接收开发仓库事件
+        run: |
+          echo "========= 收到通知 ========="
+          echo "事件类型：${{ github.event.action }}"
+          echo "事件来源：${{ github.event.client_payload.event_type }}"
+          echo "目标分支：${{ github.event.client_payload.branch }}"
+          echo "部署状态：${{ github.event.client_payload.status }}"
+
+
+      # 安装 Node
+      - name: 安装Node环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 安装 Newman
+      - name: 安装 Newman
+        run: |
+          npm install -g newman newman-reporter-html
+          
+
+      # ==============================================
+      # 执行你的 Postman 脚本（你原来的命令不变）
+      # ==============================================
+      - name: 运行xxx模块接口测试
+        run: |
+          newman run collections/test_for_auto.postman_collection.json \
+          -e environments/测试环境.postman_environment.json \
+          -r html \
+          --reporter-html-export reports/user-api-report.html
+          
+
+      # ==========================
+      # 自动发邮件（163邮箱）
+      # ==========================
+      - name: 发送测试报告到邮箱
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.163.com
+          server_port: 465
+          username: ${{ secrets.MY_EMAIL }}
+          password: ${{ secrets.EMAIL_PWD }}
+          subject: "✅ 接口自动化测试完成 - GitHub Actions"
+          body: "测试已完成，附件为 HTML 测试报告，请查收。"
+          to: "xiao_bai828@163.com"
+          from: "接口自动化测试机器人"
+          attachments: reports/*.html
