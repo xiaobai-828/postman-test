@@ -30,15 +30,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps:     
+    steps:      
       # 拉取自己仓库里的 postman 脚本
-      - uses: actions/checkout@v4    
+      - uses: actions/checkout@v4  
+        with:
+          ref: ${{ github.event.client_payload.sha }}
       
       # ==============================================
       # 这里会自动获取 Webhook 传过来的 事件类型、分支
       # ==============================================
       - name: 接收开发仓库事件
         run: |
+          echo "触发事件：${{ github.event.client_payload.event_name }}"
+          echo "测试提交：${{ github.event.client_payload.sha }}"
+          
           echo "========= 收到通知 ========="
           echo "事件类型：${{ github.event.action }}"
           echo "事件来源：${{ github.event.client_payload.event_type }}"
