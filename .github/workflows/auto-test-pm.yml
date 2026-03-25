@@ -2,30 +2,48 @@ name: 执行接口自动化
 
 # 监控：接收 Webhook 通知（业务代码仓库）
 on:
-  # 跨仓库监听业务仓库 → 只监听你要的 5 种事件
-  workflow_run:
-    workflows:
-      - push               # 只监听开发仓库 push
-      - pull_request       # 只监听开发仓库 PR
-      - deployment         # 只监听开发仓库 部署
-      - deployment_status  # 只监听开发仓库 部署状态
-      - release            # 只监听开发仓库 发布
-    types: [completed]
-    branches: [main]
+  # workflow 只能监听同仓库下的事件
+  #workflow_run:
+  #  workflows:
+  #    - push              
+  #    - pull_request       
+  #    - deployment         
+  #    - deployment_status 
+  #    - release            
+  #  types: [completed]
+  #  branches: [main]
 
-# 手动调用触发  可以配置url、个人token 填写type到body里调用
+      # ==============================================
+      # 这里是接收开发仓库action的通知
+      # ==============================================
+  # 这里是接收这5种事件的全部类型    
+  #repository_dispatch:
+  #  types:
+  #    - deployment
+  #    - deployment_status
+  #    - push
+  #    - pull_request
+  #    - release
+
+  # 只保留需要的类型
   repository_dispatch:
     types:
-      - deployment
-      - deployment_status
       - push
-      - pull_request
+      - pull_request_opened
+      - pull_request_synchronize
       - release
-      
-      
-# 测试脚本push测试代码仓库
+      - deployment_status_test_success
+      - deployment_status_test_failure
+      - deployment_status_uat_success
+      - deployment_status_main_success
+      - deployment_status_master_success
+      # 如果你还有其他环境（如 develop），请按需添加   
+
+      # ==============================================
+      # 这里是测试代码 push 到测试代码仓库
+      # ==============================================      
   push:
-    branches: [ main ]
+    branches: [ main, master, test, uat ]
 
 jobs:
   test:
@@ -35,7 +53,7 @@ jobs:
       - uses: actions/checkout@v4  
       
       # ==============================================
-      # 这里会自动获取 Webhook 传过来的 事件类型、分支
+      # 这里会自动获取传过来的 事件类型、分支
       # ==============================================
       - name: 接收开发仓库事件
         run: |
@@ -43,10 +61,12 @@ jobs:
           echo "测试提交：${{ github.event.client_payload.sha }}"
           
           echo "========= 收到通知 ========="
-          echo "事件类型：${{ github.event.action }}"
-          echo "事件来源：${{ github.event.client_payload.event_type }}"
-          echo "目标分支：${{ github.event.client_payload.branch }}"
-          echo "部署状态：${{ github.event.client_payload.status }}"
+          echo "事件类型（action）: ${{ github.event.action }}"
+          echo "Client Payload: ${{ toJSON(github.event.client_payload) }}"
+          echo "目标分支: ${{ github.event.client_payload.ref }}"
+          echo "部署环境: ${{ github.event.client_payload.environment }}"
+          echo "部署状态: ${{ github.event.client_payload.deployment_status }}"
+          echo "PR 动作: ${{ github.event.client_payload.pr_action }}"
 
 
       # 安装 Node
