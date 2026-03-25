@@ -104,6 +104,8 @@ jobs:
           password: ${{ secrets.EMAIL_PWD }}
           subject: "✅ 接口自动化测试完成 - GitHub Actions"
           body: "测试已完成，附件为 HTML 测试报告，请查收。"
-          to: "xiao_bai828@163.com"
+          to: |
+            xiao_bai828@163.com
+            wyd9133@163.com
           from: "接口自动化测试机器人"
           attachments: reports/*.html
